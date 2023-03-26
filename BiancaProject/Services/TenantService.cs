@@ -8,6 +8,8 @@ namespace BiancaProject.Services
     internal class TenantService
     {
         private readonly DataContext _context = new DataContext();
+
+        //create new tenant if not already exists, based on their email-adress
         public async Task<TenantEntity> GetOrCreateIfNotExistsAsync(CaseRegistrationForm form)
         {
             var tenantEntity = await _context.Tenants.FirstOrDefaultAsync(x => x.Email == form.Email);

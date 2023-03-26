@@ -11,18 +11,17 @@ namespace BiancaProject.Services
     {
         private readonly CaseService _caseService = new CaseService();
         private readonly CommentService _commentService = new CommentService();
-        private readonly StatusService _statusService = new StatusService();
 
         public async Task MainMenu()
         {
             Console.Clear();
             Console.WriteLine("####### HUVUDMENY #######");
-            Console.WriteLine("1. Skapa nytt ärende");
+            Console.WriteLine("\n1. Skapa nytt ärende");
             Console.WriteLine("2. Visa alla ärenden");
             Console.WriteLine("3. Visa specifikt ärende");
             Console.WriteLine("4. Skriv kommentar till ett specifikt ärende");
             Console.WriteLine("5. Ändra status på ett specifikt ärende");
-            Console.Write("\nAnge ett av följande alternativ (1-4): ");
+            Console.Write("\nAnge ett av följande alternativ (1-5): ");
             var option = Console.ReadLine();
 
             switch (option)
@@ -38,9 +37,11 @@ namespace BiancaProject.Services
                 case "3":
                     await ShowSpecificMenu();
                     break;
+
                 case "4":
                     await WriteCommentMenu();
                     break;
+
                 case "5":
                     await ChangeStatusMenu();
                     break;
@@ -55,6 +56,7 @@ namespace BiancaProject.Services
 
             Console.Clear();
             Console.WriteLine("####### SKAPA NYTT ÄRENDE #######");
+            Console.WriteLine();
             Console.Write("Förnamn: "); form.FirstName = Console.ReadLine() ?? "";
             Console.Write("Efternamn: "); form.LastName = Console.ReadLine() ?? "";
             Console.Write("Telefonnummer: "); form.PhoneNumber = Console.ReadLine() ?? "";
@@ -69,8 +71,9 @@ namespace BiancaProject.Services
         {
             Console.Clear();
             Console.WriteLine("####### VISA ALLA ÄRENDEN #######");
+            Console.WriteLine();
             foreach (var registratedCase in await _caseService.GetAllAsync())
-                Console.WriteLine($"{registratedCase.CaseId}, {registratedCase.Description} {registratedCase.Tenant.FirstName}");
+                Console.WriteLine($"{registratedCase.CaseId}, {registratedCase.Description}, {registratedCase.Tenant.FirstName}{registratedCase.Tenant.LastName}");
 
         }
 
@@ -78,7 +81,7 @@ namespace BiancaProject.Services
         {
             await ShowAllMenu();
 
-            Console.Write("Ange ärendenummer: ");
+            Console.Write("\nAnge ärendenummer: ");
             var caseId = Console.ReadLine();
 
             if (!string.IsNullOrEmpty(caseId))
@@ -88,6 +91,7 @@ namespace BiancaProject.Services
                 {
                     Console.Clear();
                     Console.WriteLine("####### ÄRENDEINFORMATION #######");
+                    Console.WriteLine();
                     Console.WriteLine($"Ärendenummer: {registratedCase.CaseId}");
                     Console.WriteLine($"Beskrivning: {registratedCase.Description}");
                     Console.WriteLine($"Registrerat: {registratedCase.TimeWritten}");
@@ -118,7 +122,7 @@ namespace BiancaProject.Services
         {
             await ShowAllMenu();
 
-            Console.Write("Ange ärendenummer: ");
+            Console.Write("\nAnge ärendenummer: ");
             var caseId = Console.ReadLine();
 
             if (!string.IsNullOrEmpty(caseId))
@@ -126,6 +130,7 @@ namespace BiancaProject.Services
                 var form = new CommentForm();
 
                 Console.WriteLine("####### SKRIV KOMMENTAR #######");
+                Console.WriteLine();
                 Console.Write("Kommentar: ");
                 form.CommentText = Console.ReadLine() ?? "";
 
@@ -136,7 +141,7 @@ namespace BiancaProject.Services
                 }
                 else
                 {
-                    Console.WriteLine("Kommentaren kunde inte läggas till. Antingen är formuläret tomt eller ärendenummer saknas.");
+                    Console.WriteLine("\nKommentaren kunde inte läggas till. Antingen är formuläret tomt eller ärendenummer saknas.");
                 }
             }
         }
@@ -145,7 +150,7 @@ namespace BiancaProject.Services
         {
             await ShowAllMenu();
 
-            Console.Write("Ange ärendenummer: ");
+            Console.Write("\nAnge ärendenummer: ");
             var caseId = Console.ReadLine();
 
             if (!string.IsNullOrEmpty(caseId))
@@ -175,26 +180,23 @@ namespace BiancaProject.Services
                             statusId = 9;
                             break;
                         default:
-                            Console.WriteLine("Felaktigt alternativ. Statusen ändrades inte.");
+                            Console.WriteLine("\nFelaktigt alternativ. Statusen ändrades inte.");
                             return;
                     }
 
                     await _caseService.ChangeStatusAsync(caseId, statusId);
-                    Console.WriteLine($"Statusen för ärende med ärendenummer {registratedCase.CaseId} har ändrats till {registratedCase.Status.StatusName}");
+                    Console.WriteLine($"\nStatusen för ärende med ärendenummer {registratedCase.CaseId} har ändrats till {registratedCase.Status.StatusName}");
                 }
                 else
                 {
-                    Console.WriteLine($"Inget ärende med ärendenummer {caseId} hittades");
+                    Console.WriteLine($"\nInget ärende med ärendenummer {caseId} hittades");
                 }
             }
             else
             {
-                Console.WriteLine("Inget ärendenummer specificerades");
+                Console.WriteLine("\nInget ärendenummer specificerades");
             }
         }
-
-
     }
-
 }
 

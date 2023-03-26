@@ -53,6 +53,7 @@ namespace BiancaProject.Services
             return null!;
         }
 
+        //change status of specific case
         public async Task ChangeStatusAsync(string caseId, int statusId)
         {
             var _case = await GetAsync(caseId);
