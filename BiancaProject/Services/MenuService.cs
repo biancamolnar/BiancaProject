@@ -21,6 +21,7 @@ namespace BiancaProject.Services
             Console.WriteLine("2. Visa alla ärenden");
             Console.WriteLine("3. Visa specifikt ärende");
             Console.WriteLine("4. Skriv kommentar till ett specifikt ärende");
+            Console.WriteLine("5. Ändra status på ett specifikt ärende");
             Console.Write("\nAnge ett av följande alternativ (1-4): ");
             var option = Console.ReadLine();
 
@@ -142,10 +143,58 @@ namespace BiancaProject.Services
 
         public async Task ChangeStatusMenu()
         {
-            
+            await ShowAllMenu();
+
+            Console.Write("Ange ärendenummer: ");
+            var caseId = Console.ReadLine();
+
+            if (!string.IsNullOrEmpty(caseId))
+            {
+                var registratedCase = await _caseService.GetAsync(caseId);
+                if (registratedCase != null)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Ändra status för ärende med ärendenummer {registratedCase.CaseId}:");
+                    Console.WriteLine("1. Öppet");
+                    Console.WriteLine("2. Pågående");
+                    Console.WriteLine("3. Avslutat");
+                    Console.Write("\nAnge ett av följande alternativ (1-3): ");
+
+                    var option = Console.ReadLine();
+                    int statusId;
+
+                    switch (option)
+                    {
+                        case "1":
+                            statusId = 1;
+                            break;
+                        case "2":
+                            statusId = 8;
+                            break;
+                        case "3":
+                            statusId = 9;
+                            break;
+                        default:
+                            Console.WriteLine("Felaktigt alternativ. Statusen ändrades inte.");
+                            return;
+                    }
+
+                    await _caseService.ChangeStatusAsync(caseId, statusId);
+                    Console.WriteLine($"Statusen för ärende med ärendenummer {registratedCase.CaseId} har ändrats till {registratedCase.Status.StatusName}");
+                }
+                else
+                {
+                    Console.WriteLine($"Inget ärende med ärendenummer {caseId} hittades");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Inget ärendenummer specificerades");
+            }
         }
 
-    }
 
     }
+
+}
 

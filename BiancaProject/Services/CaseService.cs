@@ -3,6 +3,7 @@ using BiancaProject.Contexts;
 using BiancaProject.Models.Entities;
 using BiancaProject.Models.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BiancaProject.Services
 {
@@ -52,5 +53,12 @@ namespace BiancaProject.Services
             return null!;
         }
 
+        public async Task ChangeStatusAsync(string caseId, int statusId)
+        {
+            var _case = await GetAsync(caseId);
+            _case.StatusId = statusId;
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
